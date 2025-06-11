@@ -1,34 +1,41 @@
+## Design Decisions
 
-# library_management_task
-Basic Library Management System 
+- The ER diagram was translated into a normalized relational schema using standard PK-FK relationships.
+- PostgreSQL was chosen for robust relational data handling.
+- Docker Compose allows easy orchestration of the Flask app and PostgreSQL database.
+- Connection pooling could be added later using `SQLAlchemy` or `psycopg2.pool`.
 
-### Steps
-1. Open cmd/terminal and clone the repository (ensure git is installed or use GutHub Desktop)
+## Setup Instructions
+
+1. Clone the repo.
+2. Run `docker-compose up`.
+3. Access the Flask app on `http://localhost:5000`.
+
+## API Endpoints
+
+- `GET /api/books` — returns list of books.
+
+
+## Neo4j Graph Modeling
+
+We converted the relational model to a graph model using:
+
+- Nodes: `Book`, `Author`, `Member`
+- Relationships:
+  - `(:Book)-[:WRITTEN_BY]->(:Author)`
+  - `(:Member)-[:BORROWED]->(:Book)`
+
+This graph approach improves traversal queries such as:
+- Getting all books borrowed by a user.
+- Discovering all authors a user has read.
+- Recommending books based on shared authorship or borrowers.
+
+## Sample Endpoints
+
+- `GET /api/members/alice@example.com/borrowed-books`
+- `GET /api/books/1234567890/author`
+
+## Run with Docker
+
 ```bash
-git clone https://github.com/clumsyspeedboat/library_management_task.git
-```
-2. "cd" into the repository
-```bash
-cd <path_to_your_dir>/library_management_task
-```
-3. Create virtual environment (ensure python is installed and added to PATH)
-```bash
-python -m venv env
-```
-4. Activate virtual environment
-```bash
-env\Scripts\activate # on Windows
-source env/bin/activate # on Linux/Mac
-```
-5. Install dependencies/packages
-```bash
-pip install -r requirements.txt
-```
-5. Run Flask app
-```bash
-python app.py
-```
-6. Navigate to localhost (port will be displayed in terminal)
-```bash
-http://localhost:5000 # Most probably
-```
+docker-compose up
